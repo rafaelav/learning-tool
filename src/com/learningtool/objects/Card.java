@@ -1,33 +1,34 @@
 package com.learningtool.objects;
 
 public class Card {
-	private StringBuffer notion;
-	private StringBuffer details;
+	private String notion;
+	private String details;
 	private String category;
 
-	public Card(StringBuffer notation, StringBuffer details, String category) {
+	public Card(String notation, String details, String category) {
 		this.notion = notation;
 		this.details = details;
+		this.category = category;
 	}
 
-	public StringBuffer getNotion() {
+	public String getNotion() {
 		return notion;
 	}
 
-	public void setNotion(StringBuffer notion) {
+	public void setNotion(String notion) {
 		this.notion = notion;
 	}
 
-	public StringBuffer getDetails() {
+	public String getDetails() {
 		return details;
 	}
 
-	public void setDetails(StringBuffer details) {
+	public void setDetails(String details) {
 		this.details = details;
 	}
 
 	public String getCategory() {
-		return category;
+		return this.category;
 	}
 
 	public void setCategory(String category) {
