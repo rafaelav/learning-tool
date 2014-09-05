@@ -2,6 +2,7 @@ package com.learningtool.views;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 public class CategoryListView extends JPanel{
@@ -14,7 +15,7 @@ public class CategoryListView extends JPanel{
 		this.categoryList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.categoryList.setLayoutOrientation(JList.VERTICAL);
 		
-		this.add(this.categoryList);
+		this.add(new JScrollPane(this.categoryList));
 		setVisible(true);
 	}
 }
