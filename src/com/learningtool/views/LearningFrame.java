@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,11 +18,9 @@ public class LearningFrame extends JFrame {
 	private JButton editCard;
 	private JButton prev;
 	private JButton next;
-	private int indexSelectedCategory;
 
 	public LearningFrame(Hashtable<String, ArrayList<Card>> categoriesTable, int indexSelectedCategory) {
 		// panel for delete and edit buttons
-		this.indexSelectedCategory = indexSelectedCategory;
 		JPanel cardSettingsPanel = new JPanel();
 		deleteCard = new JButton("DELETE");
 		editCard = new JButton("EDIT");
@@ -50,14 +46,14 @@ public class LearningFrame extends JFrame {
 		next = new JButton("NEXT");
 		cardPanel.add(next, BorderLayout.LINE_END);	
 		
-		// setting panel added
+		// settings panel added
 		cardPanel.add(cardSettingsPanel, BorderLayout.PAGE_END);
 		
 
 		// panel for all screen
 		JPanel learningPanel = new JPanel();
 
-		CategoryListView categoriesView = new CategoryListView(categoriesTable.keySet(), indexSelectedCategory);		
+		CategoryListView categoriesView = new CategoryListView(categoriesTable, indexSelectedCategory);		
 		JSplitPane pane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesView, cardPanel);
 		
 		learningPanel.add(pane);
@@ -75,19 +71,7 @@ public class LearningFrame extends JFrame {
 
 	public static void main(String args[]) {
 		// dummy data		
-
-//		String[] categories = new String[10];
-//		categories[0] = "colors";
-//		categories[1] = "pets";
-//		categories[2] = "flowers";
-//		categories[3] = "names";
-//		categories[4] = "wines";
-//		categories[5] = "beers";
-//		categories[6] = "sodas";
-//		categories[7] = "clothes";
-//		categories[8] = "danish";
-//		categories[9] = "stuff";
-//		
+	
 		Hashtable<String, ArrayList<Card>> categoriesTable = new Hashtable<>();
 		categoriesTable.put("colors", new ArrayList<Card>());
 		ArrayList<Card> value = categoriesTable.get("colors");
