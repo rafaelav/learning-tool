@@ -13,6 +13,7 @@ import com.learningtool.objects.Card;
 public class CategoryListAdaptor extends AbstractListModel<String> {
 	private Logger log = Logger.getLogger(this.getClass().getName());
 	private Hashtable<String, ArrayList<Card>> categoriesTable;
+	private String selectedCategory;
 
 	public CategoryListAdaptor(
 			Hashtable<String, ArrayList<Card>> categoriesTable) {
@@ -31,12 +32,12 @@ public class CategoryListAdaptor extends AbstractListModel<String> {
 		}
 
 		log.finest("Strings before sorting ");
-		for (int i = 0; i<categoriesStrings.length;i++)
+		for (int i = 0; i < categoriesStrings.length; i++)
 			log.finest(categoriesStrings[i]);
 		// sorting the array of strings to keep order
 		for (int i = 0; i < categoriesStrings.length - 1; i++) {
 			for (int j = i + 1; j < categoriesStrings.length; j++) {
-				if (categoriesStrings[j].compareTo(categoriesStrings[i])<0) {
+				if (categoriesStrings[j].compareTo(categoriesStrings[i]) < 0) {
 					String temp = categoriesStrings[i];
 					categoriesStrings[i] = categoriesStrings[j];
 					categoriesStrings[j] = temp;
@@ -44,7 +45,7 @@ public class CategoryListAdaptor extends AbstractListModel<String> {
 			}
 		}
 		log.finest("Strings after sorting ");
-		for (int i = 0; i<categoriesStrings.length;i++)
+		for (int i = 0; i < categoriesStrings.length; i++)
 			log.finest(categoriesStrings[i]);
 		return categoriesStrings[index];
 	}
@@ -53,6 +54,14 @@ public class CategoryListAdaptor extends AbstractListModel<String> {
 	public int getSize() {
 		Set<String> categoriesSet = categoriesTable.keySet();
 		return categoriesSet.size();
+	}
+
+	/*
+	 * Returns the list of cards associated to the category at
+	 * indexSelectedCategory in JList
+	 */
+	public ArrayList<Card> getSelectedList(int indexSelectedCategory) {
+		return categoriesTable.get(getElementAt(indexSelectedCategory));
 	}
 
 }
