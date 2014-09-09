@@ -1,6 +1,7 @@
 package com.learningtool.views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -17,6 +18,7 @@ public class CardView extends JPanel{
 	private JTextArea notionTextArea;
 	private JTextArea detailsTextArea;
 	private Card card;
+	private JScrollPane auxScrollPane;
 	
 	public CardView(Card card) {
 		this.card = card;
@@ -24,8 +26,8 @@ public class CardView extends JPanel{
 		this.notionTextArea.setText(card.getNotion());
 		this.detailsTextArea = new JTextArea(5,12);
 		this.detailsTextArea.setText(card.getDetails());
-		JScrollPane auxScrollPane = new JScrollPane(this.detailsTextArea);
-		auxScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		this.auxScrollPane = new JScrollPane(this.detailsTextArea);
+		this.auxScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		this.notionTextArea.setLineWrap(true);
 		this.notionTextArea.setWrapStyleWord(true);
@@ -55,10 +57,10 @@ public class CardView extends JPanel{
 		c2.fill = GridBagConstraints.BOTH;
 		c2.gridx = 0;
 		c2.gridy = 1;
-		//c2.weighty = 0.7;
-		c2.gridheight = 5;
+		c2.weighty = 1;
+		//c2.gridheight = 7;
 
-		this.add(auxScrollPane,c2); //
+		this.add(this.auxScrollPane,c2); //
 		
 		setLayout(gbl);
 		//setLayout(new GridLayout(2, 1));
@@ -73,5 +75,7 @@ public class CardView extends JPanel{
 		this.card = card;
 		this.notionTextArea.setText(card.getNotion());
 		this.detailsTextArea.setText(card.getDetails());
+		
+		this.updateUI();
 	}
 }
