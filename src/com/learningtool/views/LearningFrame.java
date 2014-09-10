@@ -1,6 +1,7 @@
 package com.learningtool.views;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Hashtable;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
@@ -28,6 +30,8 @@ public class LearningFrame extends JFrame {
 	private JPanel learningPanel; // panel for all screen
 	private CardView cardView; // the card that is viewable in card view space
 	private int crtSelectedCard; // index of first card displayed from category
+	private String prevNotion;
+	private String prevDetails;
 
 	public void makeUpdatesToCardScreen(int updatedIndexOfCategoryList) {
 		// update selected index in CategoryListView and visible list of cards
@@ -38,6 +42,14 @@ public class LearningFrame extends JFrame {
 
 		this.cardView.setCard(categoriesView.getSelectedCardList().get(0));
 		this.crtSelectedCard = 0;
+
+		// make sure that even if for previous category an edit action was in
+		// process, then the action is stopped with no changes and button
+		// returns to edit
+		cardView.getNotionTextArea().setEditable(false);
+		cardView.getDetailsTextArea().setEditable(false);
+		this.editCard.setText("EDIT");
+		
 		this.cardPanel.updateUI();
 	}
 
@@ -68,6 +80,74 @@ public class LearningFrame extends JFrame {
 		this.cardPanel.updateUI();
 	}
 
+	public void handleEditing() {
+		// change edit button to save button
+		if (this.editCard.getText().equals("EDIT")) {
+			// keep previous notion
+			this.prevNotion = cardView.getNotionTextArea().getText();
+			this.prevDetails = cardView.getDetailsTextArea().getText();
+			// change data
+			cardView.getNotionTextArea().setEditable(true);
+			cardView.getDetailsTextArea().setEditable(true);
+
+			// switch to done button
+			this.editCard.setText("DONE");
+		} else {
+			// save data
+			String newNotion = cardView.getNotionTextArea().getText();
+			String newDetails = cardView.getDetailsTextArea().getText();
+			this.cardView.setCard(new Card(newNotion, newDetails, cardView
+					.getCard().getCategory()));
+
+			boolean foundDuplicate = false;
+			ArrayList<Card> selectedCardList = this.categoriesView
+					.getSelectedCardList();
+			for (Card c : selectedCardList) {
+				if (c.getNotion().equals(newNotion)) {
+					foundDuplicate = true;
+					if (!c.getDetails().equals(newDetails)
+							&& c.getNotion().equals(this.prevNotion)
+							|| c.getDetails().equals(newDetails)
+							&& c.getNotion().equals(this.prevNotion)) {
+						// the notion is not changed, just the details so it can
+						// be updated (or neither of them are changed)
+						foundDuplicate = false;
+					}
+				}
+			}
+
+			if (!foundDuplicate) {
+				for (Card c : selectedCardList) {
+					if (c.getNotion().equals(this.prevNotion)) {
+						// found the card which corresponds to the one that is
+						// changed
+						c.setNotion(newNotion);
+						c.setDetails(newDetails);
+						break;
+					}
+				}
+			} else {
+				// by doing this change a duplicate would be created ->
+				// notification screem
+				JOptionPane
+						.showMessageDialog(new Frame(),
+								"This notion already exists in this category. The change will not be done.");
+				// change back to original notion and details before
+				// modification
+				this.cardView.setCard(new Card(this.prevNotion,
+						this.prevDetails, cardView.getCard().getCategory()));
+			}
+
+			// stop the regions from being editable
+			cardView.getNotionTextArea().setEditable(false);
+			cardView.getDetailsTextArea().setEditable(false);
+
+			// switch back to edit button
+			this.editCard.setText("EDIT");
+		}
+
+	}
+
 	public LearningFrame(Hashtable<String, ArrayList<Card>> categoriesTable,
 			int indexSelectedCategory, int crtSelectedCard) {
 		this.crtSelectedCard = crtSelectedCard;
@@ -91,6 +171,14 @@ public class LearningFrame extends JFrame {
 		JPanel cardSettingsPanel = new JPanel();
 		deleteCard = new JButton("DELETE");
 		editCard = new JButton("EDIT");
+		editCard.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				handleEditing();
+				// storeNewDataOnEdit();
+			}
+		});
 		cardSettingsPanel.add(editCard);
 		cardSettingsPanel.add(deleteCard);
 
@@ -113,7 +201,8 @@ public class LearningFrame extends JFrame {
 		});
 
 		// card space added
-		cardView = new CardView(categoriesView.getSelectedCardList().get(this.crtSelectedCard));
+		cardView = new CardView(categoriesView.getSelectedCardList().get(
+				this.crtSelectedCard));
 		cardPanel.add(cardView, BorderLayout.CENTER);
 
 		// next button added

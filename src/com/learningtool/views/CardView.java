@@ -13,57 +13,58 @@ import javax.swing.ScrollPaneConstants;
 
 import com.learningtool.objects.Card;
 
-public class CardView extends JPanel{
+public class CardView extends JPanel {
 
 	private JTextArea notionTextArea;
 	private JTextArea detailsTextArea;
 	private Card card;
 	private JScrollPane auxScrollPane;
-	
+
 	public CardView(Card card) {
 		this.card = card;
 		this.notionTextArea = new JTextArea();
 		this.notionTextArea.setText(card.getNotion());
-		this.detailsTextArea = new JTextArea(5,12);
+		this.detailsTextArea = new JTextArea(5, 12);
 		this.detailsTextArea.setText(card.getDetails());
 		this.auxScrollPane = new JScrollPane(this.detailsTextArea);
-		this.auxScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		this.auxScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		this.notionTextArea.setLineWrap(true);
 		this.notionTextArea.setWrapStyleWord(true);
 		this.notionTextArea.setEditable(false);
 		this.notionTextArea.setToolTipText("Notion we're learning");
-		this.notionTextArea.setBackground(new Color(99,184,255));
+		this.notionTextArea.setBackground(new Color(99, 184, 255));
 
 		this.detailsTextArea.setLineWrap(true);
 		this.detailsTextArea.setWrapStyleWord(true);
 		this.detailsTextArea.setEditable(false);
 		this.detailsTextArea.setToolTipText("Details about the notion");
-		
+
 		GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
-		
+
 		GridBagConstraints c1 = new GridBagConstraints();
 		GridBagConstraints c2 = new GridBagConstraints();
-		
+
 		c1.fill = GridBagConstraints.BOTH;
 		c1.gridx = 0;
 		c1.gridy = 0;
-		//c1.weighty = 0.3;
+		// c1.weighty = 0.3;
 		c1.gridheight = 1;
-		
-		this.add(this.notionTextArea,c1);//
+
+		this.add(this.notionTextArea, c1);//
 
 		c2.fill = GridBagConstraints.BOTH;
 		c2.gridx = 0;
 		c2.gridy = 1;
 		c2.weighty = 1;
-		//c2.gridheight = 7;
+		// c2.gridheight = 7;
 
-		this.add(this.auxScrollPane,c2); //
-		
+		this.add(this.auxScrollPane, c2); //
+
 		setLayout(gbl);
-		//setLayout(new GridLayout(2, 1));
+		// setLayout(new GridLayout(2, 1));
 		setVisible(true);
 	}
 
@@ -75,7 +76,16 @@ public class CardView extends JPanel{
 		this.card = card;
 		this.notionTextArea.setText(card.getNotion());
 		this.detailsTextArea.setText(card.getDetails());
-		
+
 		this.updateUI();
+	}
+
+	public JTextArea getNotionTextArea() {
+		return notionTextArea;
+	}
+
+
+	public JTextArea getDetailsTextArea() {
+		return detailsTextArea;
 	}
 }
