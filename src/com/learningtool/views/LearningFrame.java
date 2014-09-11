@@ -23,6 +23,7 @@ public class LearningFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JButton deleteCard;
 	private JButton editCard;
+	private JButton addCard;
 	private JButton prev;
 	private JButton next;
 	private CategoryListView categoriesView;
@@ -46,10 +47,27 @@ public class LearningFrame extends JFrame {
 		// make sure that even if for previous category an edit action was in
 		// process, then the action is stopped with no changes and button
 		// returns to edit
-		cardView.getNotionTextArea().setEditable(false);
-		cardView.getDetailsTextArea().setEditable(false);
-		this.editCard.setText("EDIT");
-		
+		if (this.editCard.getText().equals("DONE")) {
+			cardView.getNotionTextArea().setEditable(false);
+			cardView.getDetailsTextArea().setEditable(false);
+			this.editCard.setText("EDIT");
+			// enable other buttons
+			this.addCard.setEnabled(true);
+			this.deleteCard.setEnabled(true);
+			this.prev.setEnabled(true);
+			this.next.setEnabled(true);
+		}
+		if (this.addCard.getText().equals("DONE")) {
+			cardView.getNotionTextArea().setEditable(false);
+			cardView.getDetailsTextArea().setEditable(false);
+			this.addCard.setText("ADD");
+			// enable other buttons
+			this.editCard.setEnabled(true);
+			this.deleteCard.setEnabled(true);
+			this.prev.setEnabled(true);
+			this.next.setEnabled(true);
+		}
+
 		this.cardPanel.updateUI();
 	}
 
@@ -92,6 +110,11 @@ public class LearningFrame extends JFrame {
 
 			// switch to done button
 			this.editCard.setText("DONE");
+			// disable other buttons
+			this.addCard.setEnabled(false);
+			this.deleteCard.setEnabled(false);
+			this.prev.setEnabled(false);
+			this.next.setEnabled(false);
 		} else {
 			// save data
 			String newNotion = cardView.getNotionTextArea().getText();
@@ -144,8 +167,82 @@ public class LearningFrame extends JFrame {
 
 			// switch back to edit button
 			this.editCard.setText("EDIT");
+			// enable other buttons
+			this.addCard.setEnabled(true);
+			this.deleteCard.setEnabled(true);
+			this.prev.setEnabled(true);
+			this.next.setEnabled(true);
 		}
 
+	}
+
+	public void handleAdding() {
+		// change edit button to save button
+		if (this.addCard.getText().equals("ADD")) {
+			// create new card
+			System.out.println(this.categoriesView.getCrtSelectedCategory());
+			Card newCard = new Card("", "",
+					this.categoriesView.getCrtSelectedCategory());
+			// display empty card
+			this.cardView.setCard(newCard);
+			// enable editing
+			cardView.getNotionTextArea().setEditable(true);
+			cardView.getDetailsTextArea().setEditable(true);
+
+			// switch to done button
+			this.addCard.setText("DONE");
+			// disable other buttons
+			this.editCard.setEnabled(false);
+			this.deleteCard.setEnabled(false);
+			this.prev.setEnabled(false);
+			this.next.setEnabled(false);
+
+			this.cardPanel.updateUI();
+		} else {
+			// save data
+			String newNotion = cardView.getNotionTextArea().getText();
+			String newDetails = cardView.getDetailsTextArea().getText();
+			this.cardView.setCard(new Card(newNotion, newDetails, cardView
+					.getCard().getCategory()));
+
+			boolean foundDuplicate = false;
+			ArrayList<Card> selectedCardList = this.categoriesView
+					.getSelectedCardList();
+			for (Card c : selectedCardList) {
+				if (c.getNotion().equals(newNotion)) {
+					foundDuplicate = true;
+				}
+			}
+
+			if (!foundDuplicate) {
+				this.categoriesView.getSelectedCardList().add(
+						new Card(newNotion, newDetails, this.categoriesView
+								.getCrtSelectedCategory()));
+				this.crtSelectedCard = this.categoriesView.getSelectedCardList().size()-1;
+			} else {
+				// by doing this change a duplicate would be created ->
+				// notification screem
+				JOptionPane
+						.showMessageDialog(new Frame(),
+								"This notion already exists in this category. The change will not be done.");
+				// change back to original notion and details before
+				// modification
+				this.cardView.setCard(categoriesView.getSelectedCardList().get(0));
+				this.crtSelectedCard = 0;
+			}
+
+			// stop the regions from being editable
+			cardView.getNotionTextArea().setEditable(false);
+			cardView.getDetailsTextArea().setEditable(false);
+
+			// switch back to edit button
+			this.addCard.setText("ADD");
+			// enable other buttons
+			this.editCard.setEnabled(true);
+			this.deleteCard.setEnabled(true);
+			this.prev.setEnabled(true);
+			this.next.setEnabled(true);
+		}
 	}
 
 	public LearningFrame(Hashtable<String, ArrayList<Card>> categoriesTable,
@@ -167,18 +264,26 @@ public class LearningFrame extends JFrame {
 			}
 		});
 
-		// panel for delete and edit buttons
+		// panel for delete, add and edit buttons
 		JPanel cardSettingsPanel = new JPanel();
 		deleteCard = new JButton("DELETE");
 		editCard = new JButton("EDIT");
+		addCard = new JButton("ADD");
 		editCard.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				handleEditing();
-				// storeNewDataOnEdit();
 			}
 		});
+		addCard.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				handleAdding();
+			}
+		});
+		cardSettingsPanel.add(addCard);
 		cardSettingsPanel.add(editCard);
 		cardSettingsPanel.add(deleteCard);
 

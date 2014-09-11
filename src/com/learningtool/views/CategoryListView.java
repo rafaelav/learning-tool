@@ -53,6 +53,11 @@ public class CategoryListView extends JPanel {
 	public void updateSelectedCategoryIndex(int newIndex) {
 		this.indexSelectedCategory = newIndex;
 	}
+	
+	public int getIndexSelectedCategory() {
+		return indexSelectedCategory;
+	}
+
 	/*
 	 * Updates the list of cards attributed to the selected category
 	 */
@@ -65,6 +70,10 @@ public class CategoryListView extends JPanel {
 	 */
 	public JList<String> getCategoryList() {
 		return categoryList;
+	}
+	
+	public String getCrtSelectedCategory() {
+		return categoryAdaptor.getElementAt(this.indexSelectedCategory);
 	}
 	
 }
